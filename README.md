@@ -33,7 +33,7 @@ AI学习过程中的所思所想/一些尝试
 - **[`/Projects`](./Projects)**：
   - `Agent-Construction`: Agent 的逻辑架构图与配置文件。
   - `Vibe-Coding-App`: 由 AI 辅助生成的代码仓库及部署说明。
-- **[`/Daily-Log`](./Daily-Log)**：按月份组织的学习心得。
+- **[`/Daily-Log`](./Daily-Log)**：每日学习心得。
 - **[`/Insights`](./Insights)**：每周的产品解读与商业化思考。
 
 ---
