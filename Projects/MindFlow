@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MindFlow v4 - 猫咪后院 (本地图片版)</title>
+    <style>
+        :root {
+            /* Cat Cafe Theme Colors */
+            --primary: #e1b12c; /* 暖黄 - 罐头/食物 */
+            --secondary: #74b9ff; /* 柔蓝 - 玩具/娱乐 */
+            --accent: #ff7675; /* 柔粉 - 猫咪/爱心 */
+            --bg: #fff7e6; /* 米色背景 */
+            --card-bg: #ffffff;
+            --text: #574b90; /* 深紫灰文字 */
+            --gray: #b2bec3;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 25px 15px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f3e0be' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        /* 标题区 */
+        header { text-align: center; margin-bottom: 5px; }
+        h1 { margin: 0; font-size: 1.8rem; color: var(--text); font-weight: 800; }
+        p.subtitle { margin: 5px 0 0; color: var(--gray); font-size: 0.9rem; }
+
+        /* 卡片通用 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(87, 75, 144, 0.08);
+            border: 2px solid #fff;
+        }
+
+        /* =========================================
+           画廊与背包区域
+        ========================================= */
+        .gallery-header {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .count-badge {
+            background: #f1f2f6;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+
+        /* 网格布局 */
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            background: #fcf8f2;
+            padding: 12px;
+            border-radius: 20px;
+            min-height: 90px;
+            border: 2px dashed #eee0cb;
+            align-items: start;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* 物品项 */
+        .collectible-item {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 28px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid #f0f0f0;
+            position: relative;
+        }
+        .collectible-item.food { border-color: var(--primary); background: #fffdf5; color: var(--primary); }
+        .collectible-item.toy { border-color: var(--secondary); background: #f5fbff; color: var(--secondary); }
+        
+        /* 猫咪卡片 (在乐园中) */
+        .cat-card {
+            grid-column: span 2;
+            height: 100px; /* 稍微调高一点以便显示图片 */
+            width: auto;
+            border-radius: 18px;
+            background-size: cover; background-position: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: bounceIn 0.6s;
+            border: 3px solid #fff;
+            position: relative;
+            overflow: hidden;
+            background-color: #eee; /* 图片加载失败时的底色 */
+        }
+        .cat-card-name {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.8);
+            font-size: 0.75rem; padding: 4px; text-align: center;
+            font-weight: bold; color: var(--text);
+        }
+
+        .empty-msg {
+            grid-column: 1 / -1; text-align: center; color: var(--gray);
+            font-size: 0.85rem; padding: 25px 0; opacity: 0.7;
+        }
+
+        /* 商店按钮 */
+        .shop-btn-container { text-align: center; margin-top: 10px; }
+        .shop-btn {
+            background: var(--accent); color: white; border: none;
+            padding: 12px 30px; border-radius: 30px;
+            font-size: 1rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 118, 117, 0.3);
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .shop-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255, 118, 117, 0.4); }
+        .shop-btn:disabled { background: var(--gray); box-shadow: none; opacity: 0.7; cursor: not-allowed; transform: none;}
+
+
+        /* 任务区 & 多巴胺区 */
+        .input-group input { border: 2px solid #eee0cb; background: #fffcf9; }
+        .input-group input:focus { border-color: var(--primary); }
+        .add-btn { background: var(--primary); box-shadow: 0 4px 15px rgba(225, 177, 44, 0.3); }
+        .add-btn:hover { background: #cd9f25; }
+        li .check-circle { border-color: var(--primary); }
+        li:hover .check-circle { background: rgba(225, 177, 44, 0.2); }
+        
+        .dopamine-card { background: linear-gradient(135deg, #eaf4fc 0%, #f3eefc 100%); }
+        .dopamine-btn { box-shadow:0 4px 10px rgba(0,0,0,0.05); }
+
+
+        /* 商店 Modal */
+        #shop-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            justify-content: center; align-items: end;
+        }
+        .modal-content {
+            background: #fff; width: 100%; max-width: 480px;
+            border-radius: 24px 24px 0 0; padding: 25px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+            animation: slideUp 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { margin: 0; font-size: 1.4rem; color: var(--text); }
+        .close-btn { background: #f1f2f6; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; color: var(--gray);}
+
+        /* 商店商品列表 */
+        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .shop-item {
+            background: #fcf8f2; border-radius: 18px; padding: 15px;
+            text-align: center; border: 2px solid #eee0cb;
+            transition: all 0.2s; position: relative;
+            opacity: 0.8;
+        }
+        .shop-item.affordable { opacity: 1; border-color: var(--accent); background: #fff5f5; cursor: pointer; }
+        .shop-item.affordable:hover { transform: translateY(-5px); }
+
+        .shop-cat-img {
+            width: 100%; height: 100px; border-radius: 12px;
+            background-size: cover; background-position: center; margin-bottom: 10px;
+            background-color: #eee;
+        }
+        .shop-cat-name { font-weight: bold; margin-bottom: 8px; color: var(--text); }
+        .shop-cat-price {
+            display: flex; justify-content: center; gap: 8px;
+            font-size: 0.9rem; color: var(--gray); font-weight: 600;
+        }
+        .price-tag { display: flex; align-items: center; gap: 4px; }
+        .affordable .price-tag { color: var(--accent); }
+
+        /* 动画 */
+        @keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        @keyframes bounceIn { 0%, 20%, 40%, 60%, 80%, 100% {transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);} 0% {opacity: 0; transform: scale3d(.3, .3, .3);} 20% {transform: scale3d(1.1, 1.1, 1.1);} 40% {transform: scale3d(.9, .9, .9);} 60% {opacity: 1; transform: scale3d(1.03, 1.03, 1.03);} 80% {transform: scale3d(.97, .97, .97);} 100% {opacity: 1; transform: scale3d(1, 1, 1);} }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1001;"></canvas>
+
+<div class="container">
+    <header>
+        <h1>🐱 MindFlow 猫咪后院</h1>
+        <p class="subtitle">完成任务挣猫粮，娱乐休息攒玩具</p>
+    </header>
+
+    <div class="card" style="background: #fffdf5;">
+        <div class="gallery-header" style="color: var(--accent);">
+            <span>🏡 我的猫咪乐园</span>
+            <span class="count-badge" id="cat-count-badge">0 只</span>
+        </div>
+        <div id="cat-garden" class="visual-grid" style="border-color: #ffeaa7;">
+            <div class="empty-msg" id="empty-garden">
+                还没有猫咪哦...<br>快去商店兑换一只吧！
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="gallery-header" style="color: var(--text);">
+            <span>🎒 我的背包 (资源)</span>
+            <div style="display: flex; gap:10px;">
+                <span class="count-badge" style="color:var(--primary)">🐟 <span id="food-count">0</span></span>
+                <span class="count-badge" style="color:var(--secondary)">🧶 <span id="toy-count">0</span></span>
+            </div>
+        </div>
+        <div id="inventory-gallery" class="visual-grid">
+             <div class="empty-msg" id="empty-inventory">
+                背包空空如也。<br>完成任务获得食物，休息获得玩具。
+            </div>
+        </div>
+        <div class="shop-btn-container">
+            <button id="open-shop-btn" class="shop-btn" onclick="openShop()" disabled>
+                🏪 前往商店兑换猫咪
+            </button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="input-group" style="display: flex; gap: 12px;">
+            <input type="text" id="taskInput" placeholder="为了猫主子，下一步做什么？" onkeypress="handleEnter(event)" style="flex:1; padding: 15px; border-radius: 16px; border: 2px solid #eee; outline:none;">
+            <button class="add-btn" onclick="addTask()" style="width: 54px; border-radius: 16px; border:none; background:var(--primary); color:white; font-size:1.5rem; cursor:pointer;">🐟</button>
+        </div>
+        <ul id="taskList" style="list-style:none; padding:0; margin-top:20px;"></ul>
+    </div>
+
+    <div class="card dopamine-card">
+        <h3 style="margin-top: 0; text-align:center; color: #574b90;">🧶 摸鱼/休息一下</h3>
+        <div id="dopamine-result" style="text-align:center; margin: 15px 0; min-height: 24px; font-weight:bold; color:var(--secondary);">准备好收集玩具了吗？</div>
+        <div class="dopamine-options" style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+            <button class="dopamine-btn" onclick="getDopamine('quick')" data-type="energy" style="background:#fff; border:none; padding:10px 16px; border-radius:20px; font-weight:bold; cursor:pointer;"><span>⚡</span> 快速充能</button>
+            <button class="dopamine-btn" onclick="getDopamine('deep')" data-type="calm" style="background:#fff; border:none; padding:10px 16px; border-radius:20px; font-weight:bold; cursor:pointer;"><span>🧘‍♀️</span> 深度休息</button>
+            <button class="dopamine-btn" onclick="getDopamine('treat')" data-type="treat" style="background:#fff; border:none; padding:10px 16px; border-radius:20px; font-weight:bold; cursor:pointer;"><span>🎮</span> 纯粹娱乐</button>
+        </div>
+    </div>
+</div>
+
+<div id="shop-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">🏪 猫咪商店</h2>
+            <button class="close-btn" onclick="closeShop()">✕</button>
+        </div>
+        <div class="shop-grid" id="shop-list"></div>
+    </div>
+</div>
+
+<script>
+    // === 数据状态 ===
+    let inventory = { food: 0, toy: 0 };
+    let ownedCats = [];
+    const foodIcons = ['🐟', '🥫', '🥩'];
+    const toyIcons = ['🧶', '🐁', '🪶', '🎾'];
+
+    // === 1. 自定义你的猫咪图片 ===
+    // 请确保你在 html 文件旁边创建了 images 文件夹，并放入了对应名字的 jpg 图片
+    const catShopData = [
+        { id: 'persian', name: '波斯猫', price: { food: 3, toy: 2 }, image: './images/persian.jpg' },
+        { id: 'siamese', name: '暹罗猫', price: { food: 3, toy: 3 }, image: './images/siamese.jpg' },
+        { id: 'maine', name: '缅因猫', price: { food: 5, toy: 3 }, image: './images/maine.jpg' },
+        { id: 'bengal', name: '孟加拉猫', price: { food: 4, toy: 5 }, image: './images/bengal.jpg' },
+        { id: 'ragdoll', name: '布偶猫', price: { food: 6, toy: 4 }, image: './images/ragdoll.jpg' },
+        { id: 'british', name: '英短蓝猫', price: { food: 4, toy: 4 }, image: './images/british.jpg' }
+    ];
+    
+    // === 核心逻辑 ===
+    function addTask() {
+        const input = document.getElementById('taskInput');
+        const text = input.value.trim();
+        if (text) {
+            const li = document.createElement('li');
+            li.innerHTML = `<div style="display:flex; align-items:center; font-weight: 500;"><div class="check-circle" style="width:20px; height:20px; border:2px solid var(--primary); border-radius:50%; margin-right:12px;"></div><span>${text}</span></div>`;
+            li.style.cssText = "background:#fff; padding:15px; margin-bottom:10px; border-radius:16px; display:flex; align-items:center; cursor:pointer; transition:all 0.2s; border:1px solid #f0f0f0;";
+            li.onclick = function() { completeTask(li); };
+            document.getElementById('taskList').prepend(li);
+            input.value = ''; input.focus();
+        }
+    }
+
+    function completeTask(element) {
+        fireConfetti(['#e1b12c', '#f1c40f']);
+        element.style.transform = "scale(1.02) translateX(10px)";
+        element.style.background = "#fffdf5"; element.style.borderColor = "var(--primary)";
+        setTimeout(() => {
+            element.style.opacity = "0"; element.style.transform = "scale(0.8) translateY(-20px)";
+            setTimeout(() => element.remove(), 300);
+        }, 200);
+        addResource('food');
+    }
+
+    const menus = {
+        quick: { items: ["喝水", "伸懒腰", "远眺", "听首快歌"], icon: '⚡' },
+        deep:  { items: ["散步", "冥想", "阅读一章", "整理桌面"], icon: '🧘‍♀️' },
+        treat: { items: ["看个搞笑视频", "吃个零食", "刷会儿手机", "发呆"], icon: '🎮' }
+    };
+
+    function getDopamine(type) {
+        const category = menus[type];
+        const randomItem = category.items[Math.floor(Math.random() * category.items.length)];
+        const display = document.getElementById('dopamine-result');
+        display.style.opacity = 0;
+        setTimeout(() => {
+            display.innerHTML = `${category.icon} 建议：${randomItem}`;
+            display.style.opacity = 1;
+        }, 200);
+        addResource('toy');
+    }
+
+    function addResource(type) {
+        inventory[type]++;
+        updateInventoryUI();
+        const gallery = document.getElementById('inventory-gallery');
+        document.getElementById('empty-inventory').style.display = 'none';
+        const item = document.createElement('div');
+        item.className = `collectible-item ${type}`;
+        const iconSet = type === 'food' ? foodIcons : toyIcons;
+        item.innerText = iconSet[Math.floor(Math.random() * iconSet.length)];
+        gallery.appendChild(item);
+        gallery.scrollTop = gallery.scrollHeight;
+    }
+
+    function updateInventoryUI() {
+        document.getElementById('food-count').innerText = inventory.food;
+        document.getElementById('toy-count').innerText = inventory.toy;
+        const canAffordAnything = catShopData.some(cat => inventory.food >= cat.price.food && inventory.toy >= cat.price.toy);
+        const shopBtn = document.getElementById('open-shop-btn');
+        shopBtn.disabled = !canAffordAnything;
+        if(canAffordAnything) {
+             shopBtn.innerHTML = "🏪 前往商店兑换猫咪 (有新品!)";
+             shopBtn.style.animation = "bounceIn 0.5s";
+        } else {
+             shopBtn.innerHTML = "🏪 前往商店兑换猫咪";
+             shopBtn.style.animation = "none";
+        }
+    }
+
+    // === 商店系统 (已修改为支持本地图片) ===
+    function openShop() {
+        const modal = document.getElementById('shop-modal');
+        const list = document.getElementById('shop-list');
+        list.innerHTML = '';
+        catShopData.forEach(cat => {
+            const affordable = inventory.food >= cat.price.food && inventory.toy >= cat.price.toy;
+            const item = document.createElement('div');
+            item.className = `shop-item ${affordable ? 'affordable' : ''}`;
+            if(affordable) {
+                item.onclick = () => redeemCat(cat);
+            }
+            // 使用配置好的 image 路径，如果图片加载失败（比如你还没放图片），会显示一个灰色块
+            item.innerHTML = `
+                <div class="shop-cat-img" style="background-image: url('${cat.image}')"></div>
+                <div class="shop-cat-name">${cat.name}</div>
+                <div class="shop-cat-price">
+                    <span class="price-tag">🐟 ${cat.price.food}</span>
+                    <span class="price-tag">🧶 ${cat.price.toy}</span>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+        modal.style.display = 'flex';
+    }
+
+    function closeShop() { document.getElementById('shop-modal').style.display = 'none'; }
+
+    function redeemCat(cat) {
+        inventory.food -= cat.price.food;
+        inventory.toy -= cat.price.toy;
+        updateInventoryUI();
+        ownedCats.push(cat);
+        const garden = document.getElementById('cat-garden');
+        document.getElementById('empty-garden').style.display = 'none';
+        
+        const catCard = document.createElement('div');
+        catCard.className = 'cat-card';
+        // 使用配置好的 image 路径
+        catCard.style.backgroundImage = `url('${cat.image}')`;
+        catCard.innerHTML = `<div class="cat-card-name">${cat.name}</div>`;
+        
+        garden.appendChild(catCard);
+        document.getElementById('cat-count-badge').innerText = ownedCats.length + " 只";
+        closeShop();
+        setTimeout(() => fireConfetti(['#ff7675', '#e1b12c', '#74b9ff']), 300);
+    }
+
+    function handleEnter(e) { if (e.key === 'Enter') addTask(); }
+
+    function fireConfetti(colors) {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const pieces = [];
+        for (let i = 0; i < 80; i++) {
+            pieces.push({
+                x: window.innerWidth / 2, y: window.innerHeight / 2,
+                w: Math.random()*8+5, h: Math.random()*8+5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                vx: (Math.random()-0.5)*30, vy: (Math.random()-0.5)*30, gravity: 1
+            });
+        }
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let active = false;
+            pieces.forEach(p => {
+                p.x+=p.vx; p.y+=p.vy; p.vy+=p.gravity;
+                if (p.y < canvas.height) active = true;
+                ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.w, p.h);
+            });
+            if (active) requestAnimationFrame(draw); else ctx.clearRect(0,0,canvas.width,canvas.height);
+        }
+        draw();
+    }
+</script>
+</body>
+</html>
