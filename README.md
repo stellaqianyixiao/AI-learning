@@ -1,26 +1,48 @@
 # AI-learning
 AI学习过程中的所思所想/一些尝试
 
-## 🎯 学习目标与对应成果
-我将学习目标分解为以下几个模块，你可以在对应的文件夹中看到我的尝试：
+> **"在 AI 时代，人类最难被模拟的资产是独特的审美偏好、结构化思维与持续的行动力。"**
 
-* **目标 1：精通提示词工程 (Prompt Engineering)**
-    * *对应文件夹：* [`/Prompt-Library`](./Prompt-Library)
-    * *现状：* 尚未开始。
+---
 
-* **目标 2：掌握 AI Agent 搭建能力**
-    * *对应文件夹：* [`/AI-Agents-Case`](./AI-Agents-Case)
-    * *现状：* 正在使用 Coze 尝试搭建一个“会议摘要助手”。
+## 🎯 2.16 冲刺目标 (Feb 16 Sprint)
+我将 2026 年 2 月 16 日设定为第一阶段里程碑，旨在完成从“使用者”到“创作者”的跨越：
 
-* **目标 3：AI 驱动的业务逻辑思考**
-    * *对应文件夹：* [`/Industry-Insights`](./Industry-Insights)
-    * *现状：* 尚未开始。
+- [ ] **个人 Agent 搭建**：基于 Dify/Coze/其他工具 部署一个具备特定业务逻辑的处理助手。
+- [ ] **Vibe Coding 实验**：通过自然语言描述（Vibe Coding）独立完成并部署一个可运行的 Web App。
+- [ ] **Prompt 深度工程化**：将现有的“PRD 生成 Prompt”进行多轮迭代，实现从“能用”到“专家级输出”的进化。
 
-## 📂 完整目录指南
-- [Learning-Log](./Learning-Log): 每日/周的学习记录与感悟。
-- [Prompt-Library](./Prompt-Library): 结构化提示词库（包含实验对比数据）。
-- [AI-Agents-Case](./AI-Agents-Case): Coze 搭建的心得与工作流截图。
-- [Insights](./Insights): 行业报告解读、AI 审美偏好与商业化思考。
+---
 
-## 🌟 最近更新
-- 2026-01-03: 创建文件夹
+## 📅 持续行动计划 (Ongoing Rituals)
+
+### 🟢 每日：碎碎念与微思考 (`/Daily-Log`)
+- **动作**：每天记录 500 字以内的学习心得。
+- **价值**：保持对 AI 变化的敏锐触觉，记录解决问题的“Aha Moments”。
+
+### 🔵 每周：深度复盘 (`/Weekly-Deep-Dive`)
+- **动作**：每周输出一份 AI 产品深度解读或行业思考。
+- **价值**：训练商业敏锐度，构建属于自己的 AI 知识资产。
+
+---
+
+## 📂 仓库导航 (Directory Guide)
+
+- **[`/Prompt-Engineering`](./Prompt-Engineering)**：
+  - 重点存放“PRD 生成器”的各个版本及对比测试结果（AB Test）。
+- **[`/Projects`](./Projects)**：
+  - `Agent-Construction`: Agent 的逻辑架构图与配置文件。
+  - `Vibe-Coding-App`: 由 AI 辅助生成的代码仓库及部署说明。
+- **[`/Daily-Log`](./Daily-Log)**：按月份组织的学习心得。
+- **[`/Insights`](./Insights)**：每周的产品解读与商业化思考。
+
+---
+
+## 💻 技术背景与环境
+- **关注领域**：B2B, 商业化路径, AI Agent, 效率工具
+- **当前身份**：一名处于 AI 转型中的资深产品经理，坚信“快速行动、竭尽全力”是获取结果的唯一途径。
+
+---
+
+## 📈 进度追踪
+- **2026-01-03**: 仓库初始化，确立 2.16 冲刺目标和具体计划。
