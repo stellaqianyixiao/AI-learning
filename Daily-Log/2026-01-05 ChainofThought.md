@@ -7,7 +7,6 @@
 - 方法：scratchpad、rationale、program induction
 - 特点：依赖人工标注推理过程，成本高、泛化弱
 
----
 
 ### 2. 正式提出（2022）：Chain-of-Thought Prompting
 - 代表论文：Wei et al., 2022（Google）
@@ -18,7 +17,6 @@
   - 无需微调，仅靠 prompt 即可激活推理能力
   - 推理问题从“训练”转为“交互设计”
 
----
 
 ### 3. 简化与增强（2022–2023）
 #### 3.1 Zero-shot CoT
@@ -30,7 +28,6 @@
 - 生成多条推理路径 → 投票选答案
 - 用算力换稳定性
 
----
 
 ### 4. 结构化推理（2023）
 #### 4.1 Tree-of-Thought（ToT）
@@ -41,7 +38,6 @@
 - 不同 Agent 扮演 Planner / Critic / Executor
 - 系统级协同推理取代单模型“自言自语”
 
----
 
 ### 5. 反思阶段（2023–2024）
 - CoT ≠ 真实思考，而是语言层面的概率生成
@@ -65,7 +61,6 @@
   - 搜索问答
   - Agent 系统
 
----
 
 ### 2. Agent 架构中的标准模式
 Thought → Action → Observation → Reflection
@@ -94,8 +89,6 @@ Thought → Action → Observation → Reflection
   - 数据处理
   - 跨系统编排
 
----
-
 ### 2. **不适合显式使用 CoT 的场景**
 - 单轮事实问答
 - 内容创作（营销文案、情绪表达）
@@ -118,7 +111,6 @@ Thought → Action → Observation → Reflection
 | 提高可控性 | 结构化 Thought 模板 |
 | 提高可扩展性 | 与工具 / Agent 解耦 |
 
----
 
 ### 2. 常见有效 CoT 设计模式
 
