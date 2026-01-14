@@ -1,4 +1,4 @@
-<img width="561" height="304" alt="image" src="https://github.com/user-attachments/assets/204b202a-6855-47f7-8ad0-b01da42c3449" />
+
 # ChatGPT Health 时代：巨头“降维打击”下的生存与破局
 
 > **背景：** 2026年初，随着 OpenAI 发布 ChatGPT Health 以及 Anthropic 推出 Claude for Healthcare，AI 医疗正式进入“原生系统”时代。这不仅是技术的更迭，更是行业格局的重塑。
